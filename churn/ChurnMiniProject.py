@@ -3,7 +3,7 @@ import numpy as np
 import seaborn as sns
 import matplotlib
 
-dfChurn = pd.read_csv("WA_Fn-UseC_-Telco-Customer-Churn.csv")
+dfChurn = pd.read_csv("Churn.csv")
 
 dfChurn.info()
 dfChurn.isnull().sum()
