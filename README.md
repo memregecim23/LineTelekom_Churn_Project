@@ -50,7 +50,7 @@ Dengesiz veri setini yönetmek için class_weight="balanced" parametresi ve Prob
 
 **(Not: Eğer dosya adınız farklıysa app.py yerine kendi dosya adınızı yazınız.)**
 
-
+Geliştirici: Mustafa Emre Geçim
 
 
 
