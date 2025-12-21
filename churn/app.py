@@ -15,18 +15,13 @@ st.set_page_config(
 # Model Eğitimi
 @st.cache_resource(show_spinner="lütfen bekleyin...")
 def train_model_live():
-    # --- DOSYA YOLU BULMA (DÜZELTİLDİ) ---
-    # Bu kod, app.py nerede ise CSV dosyasını da orada arar.
     current_dir = os.path.dirname(os.path.abspath(__file__))
     
-    # Önce kısa ismi dener: Churn.csv
     csv_path = os.path.join(current_dir, "Churn.csv")
-    
-    # Bulamazsa uzun ismi dener (Yedek plan)
+
     if not os.path.exists(csv_path):
         csv_path = os.path.join(current_dir, "WA_Fn-UseC_-Telco-Customer-Churn.csv")
 
-    # Veri Yükleme
     try:
         dfChurn = pd.read_csv(csv_path)
     except FileNotFoundError:
@@ -208,3 +203,4 @@ if submit_btn:
 
     except Exception as e:
         st.error(f"Hata: {e}")
+
