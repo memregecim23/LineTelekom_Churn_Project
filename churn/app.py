@@ -4,7 +4,7 @@ import numpy as np
 from sklearn.preprocessing import LabelEncoder, OrdinalEncoder, MinMaxScaler
 from sklearn.svm import SVC
 from sklearn.model_selection import train_test_split
-
+import os
 
 # Sayfa Ayarları
 st.set_page_config(
@@ -14,13 +14,15 @@ st.set_page_config(
 
 # Model Eğitimi
 
-@st.cache_resource(show_spinner="lütfen bekleyin...")
-def train_model_live():
-    # Veri Yükleme
-    try:
-        dfChurn = pd.read_csv("Churn.csv")
-    except FileNotFoundError:
-        return None, None, None, "CSV"
+current_dir = os.path.dirname(os.path.abspath(__file__))
+
+csv_path = os.path.join(current_dir, "Churn.csv")
+
+try:
+    dfChurn = pd.read_csv(csv_path)
+except FileNotFoundError:
+    csv_path_backup = os.path.join(current_dir, "WA_Fn-UseC_-Telco-Customer-Churn.csv")
+    dfChurn = pd.read_csv(csv_path_backup)
 
     # Veri Ön İşleme
 
@@ -206,3 +208,4 @@ if submit_btn:
     except Exception as e:
 
         st.error(f"Hata: {e}")
+
