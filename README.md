@@ -33,15 +33,13 @@ Bu projede Support Vector Classifier (SVC) algoritması kullanılmıştır.
 Dengesiz veri setini yönetmek için class_weight="balanced" parametresi ve Probability Threshold = 0.25 (Hassas Tahmin) ayarı tercih edilmiştir.
 
 - Algoritma: SVC (Kernel: RBF)
-
-  
 [[923 352]
- [103 383]]
-              precision    recall  f1-score   support
-           0       0.90      0.72      0.80      1275
-           1       0.52      0.79      0.63       486
-    accuracy                           0.74      1761
-   macro avg       0.71      0.76      0.71      1761
+[103 383]]
+   precision    recall  f1-score   support
+0       0.90      0.72      0.80      1275
+1       0.52      0.79      0.63       486
+accuracy                           0.74      1761
+macro avg       0.71      0.76     0.71      1761
 weighted avg       0.80      0.74      0.75      1761
 0.7416240772288473
 
