@@ -1,10 +1,10 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
+import os
 from sklearn.preprocessing import LabelEncoder, OrdinalEncoder, MinMaxScaler
 from sklearn.svm import SVC
 from sklearn.model_selection import train_test_split
-import os
 
 # Sayfa Ayarları
 st.set_page_config(
@@ -13,31 +13,32 @@ st.set_page_config(
 )
 
 # Model Eğitimi
+@st.cache_resource(show_spinner="lütfen bekleyin...")
+def train_model_live():
+    # --- DOSYA YOLU BULMA (DÜZELTİLDİ) ---
+    # Bu kod, app.py nerede ise CSV dosyasını da orada arar.
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    
+    # Önce kısa ismi dener: Churn.csv
+    csv_path = os.path.join(current_dir, "Churn.csv")
+    
+    # Bulamazsa uzun ismi dener (Yedek plan)
+    if not os.path.exists(csv_path):
+        csv_path = os.path.join(current_dir, "WA_Fn-UseC_-Telco-Customer-Churn.csv")
 
-current_dir = os.path.dirname(os.path.abspath(__file__))
+    # Veri Yükleme
+    try:
+        dfChurn = pd.read_csv(csv_path)
+    except FileNotFoundError:
+        return None, None, None, "CSV"
 
-csv_path = os.path.join(current_dir, "Churn.csv")
-
-try:
-    dfChurn = pd.read_csv(csv_path)
-except FileNotFoundError:
-    csv_path_backup = os.path.join(current_dir, "WA_Fn-UseC_-Telco-Customer-Churn.csv")
-    dfChurn = pd.read_csv(csv_path_backup)
-
-    # Veri Ön İşleme
-
+    # --- VERİ ÖN İŞLEME ---
     # TotalCharges düzenleme
     dfChurn["TotalCharges"] = pd.to_numeric(dfChurn["TotalCharges"], errors='coerce')
     dfChurn["TotalCharges"] = dfChurn["TotalCharges"].fillna(2700.0)
     dfChurn["TotalCharges"] = dfChurn["TotalCharges"].astype(float)
 
-    # Label Encoding yapılacakları direkt düşüyoruz (Senin yöntem)
-    columns_to_labelencode = [
-        "gender", "SeniorCitizen", "Partner", "Dependents", "PhoneService",
-        "OnlineSecurity", "OnlineBackup", "DeviceProtection", "TechSupport",
-        "StreamingTV", "StreamingMovies", "PaperlessBilling", "Churn", "MultipleLines"
-    ]
-
+    # Label Encoding yapılacakları direkt düşüyoruz
     # Target (Churn) Encode
     dfChurn["Churn_encode"] = dfChurn["Churn"].apply(lambda x: 1 if x == "Yes" else 0)
 
@@ -64,12 +65,10 @@ except FileNotFoundError:
 
     # Orijinal df'den değerleri alıp map eder
     for col in cols_to_map:
-        # SeniorCitizen zaten 0-1, diğerleri Yes-No
         if col == "SeniorCitizen":
             dfChurnencode[f"{col}_encode"] = dfChurn[col]
         else:
             dfChurnencode[f"{col}_encode"] = dfChurn[col].apply(lambda x: 1 if x == "Yes" else 0)
-
 
     # X ve y ayrımı
     X = dfChurnencode.drop(["Churn_encode"], axis=1)
@@ -93,11 +92,11 @@ model, scaler, model_columns, status = train_model_live()
 # Streamlit Arayüzü
 
 if status == "CSV":
-    st.error("🚨 HATA: 'WA_Fn-UseC_-Telco-Customer-Churn.csv' dosyası bulunamadı!")
-    st.warning("Lütfen CSV dosyasını bu python dosyasının olduğu klasöre atın.")
+    st.error("🚨 HATA: CSV dosyası bulunamadı!")
+    st.warning("Lütfen 'Churn.csv' dosyasını 'app.py' ile AYNI klasöre koyun.")
     st.stop()
 
-st.title("📉 LİNETELEKOM İŞTE-İŞ CHURN ANALİZ UYGULAMASI")
+st.title("📉 LİNETELEKOM CHURN ANALİZ UYGULAMASI")
 
 with st.form("churn_form"):
     st.header("Müşteri Bilgileri")
@@ -105,9 +104,9 @@ with st.form("churn_form"):
 
     with col1:
         st.subheader("Hizmet & Sözleşme")
-        tenure = st.number_input("Müşteri Süresi(AY)", min_value=0,value=12)
-        monthly_charges = st.number_input("Aylık Ücret(küsüratlı giriniz)", min_value=100.5,value=220.5)
-        total_charges = st.number_input("Toplam Ücret(küsüratlı giriniz)", min_value=100.5,value=1700.5)
+        tenure = st.number_input("Müşteri Süresi (AY)", min_value=0, value=12)
+        monthly_charges = st.number_input("Aylık Ücret", min_value=0.0, value=220.5)
+        total_charges = st.number_input("Toplam Ücret", min_value=0.0, value=1700.5)
 
         contract = st.selectbox("Sözleşme Türü", ["aydan-aya", "12 ay taahhüt", "24 ay taahhüt"])
         internet_service = st.selectbox("İnternet Servisi", ["Yok", "DSL", "Fiber optic"])
@@ -119,7 +118,9 @@ with st.form("churn_form"):
         dependents = st.selectbox("Bakmakla Yükümlü?", ["Hayır", "Evet"])
         paperless_billing = st.selectbox("Kağıtsız Fatura?", ["Hayır", "Evet"])
         payment_method = st.selectbox("Ödeme Yöntemi", [
-            "Electronic check(elektronik çek)", "Mailed check(posta çeki) ", "Bank transfer (automatic) / otomatik havale", "Credit card (automatic) / kredi kartı ile otomatik ödeme"
+            "Electronic check(elektronik çek)", "Mailed check(posta çeki) ", 
+            "Bank transfer (automatic) / otomatik havale", 
+            "Credit card (automatic) / kredi kartı ile otomatik ödeme"
         ])
 
     st.subheader("Ek Servisler")
@@ -132,9 +133,8 @@ with st.form("churn_form"):
     submit_btn = st.form_submit_button("Analiz Et")
 
 # TAHMİN
-
 if submit_btn:
-    # Kullanıcı verisini df'e döüştürme
+    # Kullanıcı verisini df'e dönüştürme
     input_data = pd.DataFrame(index=[0])
 
     # Değerleri Atama
@@ -142,11 +142,9 @@ if submit_btn:
     input_data['MonthlyCharges'] = monthly_charges
     input_data['TotalCharges'] = total_charges
 
-
     # Binary Mapping
     def binary_map(val):
         return 1 if val == "Evet" else 0
-
 
     input_data['SeniorCitizen_encode'] = binary_map(senior_citizen)
     input_data['Partner_encode'] = binary_map(partner)
@@ -173,21 +171,24 @@ if submit_btn:
     ]
     for col in pay_methods: input_data[col] = 0
 
-    sel_pay = f"PaymentMethod_{payment_method}"
+    # Seçilen ödeme yöntemini eşleştirme (string temizliği ile)
+    if "Bank transfer" in payment_method: sel_pay = 'PaymentMethod_Bank transfer (automatic)'
+    elif "Credit card" in payment_method: sel_pay = 'PaymentMethod_Credit card (automatic)'
+    elif "Electronic check" in payment_method: sel_pay = 'PaymentMethod_Electronic check'
+    elif "Mailed check" in payment_method: sel_pay = 'PaymentMethod_Mailed check'
+    else: sel_pay = None
+
     if sel_pay in pay_methods: input_data[sel_pay] = 1
 
-    # Sütun hizalama (Eğitimdeki X sütunlarına göre)
+    # Sütun hizalama
     input_data = input_data.reindex(columns=model_columns, fill_value=0)
 
     # Ölçeklendirme ve Tahmin
     try:
         input_scaled = scaler.transform(input_data)
-        prob = model.predict_proba(input_scaled)[0][1]  # Churn Olasılığı
+        prob = model.predict_proba(input_scaled)[0][1]
 
-
-        # Modelin optimali 0.25 olsa da, Arayüzde %50 (0.50) kullanıyoruz.
         ui_threshold = 0.50
-
         prediction = 1 if prob >= ui_threshold else 0
 
         st.write("---")
@@ -206,6 +207,4 @@ if submit_btn:
         st.progress(prob)
 
     except Exception as e:
-
         st.error(f"Hata: {e}")
-
