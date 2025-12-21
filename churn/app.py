@@ -17,7 +17,7 @@ st.set_page_config(
 def train_model_live():
     # Veri Yükleme
     try:
-        dfChurn = pd.read_csv("WA_Fn-UseC_-Telco-Customer-Churn.csv")
+        dfChurn = pd.read_csv("Churn.csv")
     except FileNotFoundError:
         return None, None, None, "CSV"
 
