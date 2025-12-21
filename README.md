@@ -5,7 +5,7 @@ Bu proje, bir telekomünikasyon şirketinin müşteri verilerini analiz ederek, 
 Proje, 7043 müşteriye ait demografik bilgileri, hizmet kullanım detaylarını ve fatura bilgilerini içeren Telco Customer Churn veri setini kullanır. 
 Hedef değişkenimiz Churn (Müşterinin ayrılıp ayrılmadığı) sütunudur.
 
-**Değişken Adı,Açıklama**
+Değişken Adı,Açıklama
 customerID,Müşteriye özel benzersiz kimlik numarası (Modelde kullanılmaz).
 gender,Müşterinin cinsiyeti (Male/Female).
 SeniorCitizen,"Müşterinin yaşlı vatandaş olup olmadığı (1: Evet, 0: Hayır)."
@@ -35,7 +35,7 @@ Dengesiz veri setini yönetmek için class_weight="balanced" parametresi ve Prob
 - Algoritma: SVC (Kernel: RBF)
 
   
-**[[923 352]
+[[923 352]
  [103 383]]
               precision    recall  f1-score   support
            0       0.90      0.72      0.80      1275
@@ -43,7 +43,7 @@ Dengesiz veri setini yönetmek için class_weight="balanced" parametresi ve Prob
     accuracy                           0.74      1761
    macro avg       0.71      0.76      0.71      1761
 weighted avg       0.80      0.74      0.75      1761
-0.7416240772288473**
+0.7416240772288473
 
 
 
