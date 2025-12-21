@@ -4,6 +4,9 @@ import numpy as np
 from sklearn.preprocessing import LabelEncoder, OrdinalEncoder, MinMaxScaler
 from sklearn.svm import SVC
 from sklearn.model_selection import train_test_split
+import os
+st.write("📂 ŞU ANKİ KONUM:", os.getcwd())
+st.write("📄 BURADAKİ DOSYALAR:", os.listdir())
 
 # Sayfa Ayarları
 st.set_page_config(
