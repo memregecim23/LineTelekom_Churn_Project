@@ -43,7 +43,7 @@ except:
 
 
 # ---------------------------------------------------------
-# MODEL EĞİTİM FONKSİYONU (YENİ KODLARINLA GÜNCELLENDİ)
+# MODEL EĞİTİM FONKSİYONU 
 # ---------------------------------------------------------
 @st.cache_resource(show_spinner="Model eğitiliyor, lütfen bekleyin...")
 def train_model_live():
@@ -53,14 +53,14 @@ def train_model_live():
     except FileNotFoundError:
         return None, None, "CSV"
 
-    # --- VERİ ÖN İŞLEME (SENİN YENİ KODLARIN) ---
+    # --- VERİ ÖN İŞLEME  ---
 
     # TotalCharges düzenleme
     dfChurn["TotalCharges"] = pd.to_numeric(dfChurn["TotalCharges"], errors='coerce')
     dfChurn["TotalCharges"] = dfChurn["TotalCharges"].fillna(2700.0)
     dfChurn["TotalCharges"] = dfChurn["TotalCharges"].astype(float)
 
-    # Label Encoding (Manuel Mapping ile daha güvenli)
+    # Label Encoding 
     binary_cols = ["Partner", "Dependents", "PhoneService", "PaperlessBilling", "Churn",
                    "OnlineSecurity", "OnlineBackup", "DeviceProtection", "TechSupport",
                    "StreamingTV", "StreamingMovies"]
@@ -97,7 +97,7 @@ def train_model_live():
 
     dfChurnencode.drop([c for c in drop_cols_origin if c in dfChurnencode.columns], axis=1, inplace=True)
 
-    # --- DÜŞÜK KORELASYONLU SÜTUNLARI ÇIKARMA (SENİN ANALİZİN) ---
+    # --- DÜŞÜK KORELASYONLU SÜTUNLARI ÇIKARMA ---
     low_corr = [
         "gender_encode",
         "PhoneService_encode",
@@ -140,7 +140,7 @@ else:
     model, model_columns, status = model_results
 
 # ---------------------------------------------------------
-# STREAMLIT ARAYÜZÜ (ORİJİNAL TASARIM KORUNDU)
+# STREAMLIT ARAYÜZÜ 
 # ---------------------------------------------------------
 st.title("📉 LİNETELEKOM İŞTE-İŞ CHURN ANALİZ UYGULAMASI")
 
@@ -180,7 +180,7 @@ with st.form("churn_form"):
     submit_btn = st.form_submit_button("Analiz Et")
 
 # ---------------------------------------------------------
-# TAHMİN İŞLEMİ (YENİ MODEL UYUMLU)
+# TAHMİN İŞLEMİ
 # ---------------------------------------------------------
 if submit_btn:
     # Kullanıcı verisini df'e dönüştürme
@@ -217,7 +217,7 @@ if submit_btn:
     contract_map = {"aydan-aya": 0, "12 ay taahhüt": 1, "24 ay taahhüt": 2}
     input_data['Contract_encode'] = contract_map[contract]
 
-    # One-Hot Encoding (Payment) - Modeldeki isimlerle eşleşmeli
+    # One-Hot Encoding (Payment)
     pay_methods = [
         'PaymentMethod_Bank transfer (automatic)',
         'PaymentMethod_Credit card (automatic)',
@@ -271,3 +271,4 @@ if submit_btn:
 
     except Exception as e:
         st.error(f"Tahmin sırasında hata oluştu: {e}")
+
