@@ -45,13 +45,25 @@ except:
 # ---------------------------------------------------------
 # MODEL EĞİTİM FONKSİYONU 
 # ---------------------------------------------------------
+# --- MEVCUT KODUNU BU ŞEKİLDE DEĞİŞTİR ---
+
 @st.cache_resource(show_spinner="Model eğitiliyor, lütfen bekleyin...")
 def train_model_live():
     # Veri Yükleme
     try:
-        dfChurn = pd.read_csv("Churn.csv")
+        # YÖNTEM: app.py dosyasının tam yolunu bulup, yanındaki Churn.csv'yi hedefler
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        file_path = os.path.join(current_dir, "Churn.csv")
+        
+        dfChurn = pd.read_csv(file_path) # Artık "Churn.csv" yerine file_path kullanıyoruz
+        
     except FileNotFoundError:
+        # Hata ayıklama için ekrana yol bilgisini basalım
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        st.error(f"Dosya Bulunamadı! Aranan yol: {os.path.join(current_dir, 'Churn.csv')}")
         return None, None, "CSV"
+
+    # ... kodun kalanı aynı devam eder ...
 
     # --- VERİ ÖN İŞLEME  ---
 
@@ -271,4 +283,5 @@ if submit_btn:
 
     except Exception as e:
         st.error(f"Tahmin sırasında hata oluştu: {e}")
+
 
