@@ -111,6 +111,7 @@ dfChurnencode.drop(columns=low_corr,axis=1,inplace=True)
 
 # Model kurulum - Performans izleme aşamaları yapıldı.
 
+#X ve y olarak ayrıldı split edildi
 X = dfChurnencode.drop(["Churn_encode"],axis=1)
 y = dfChurnencode["Churn_encode"]
 
@@ -118,27 +119,49 @@ y = dfChurnencode["Churn_encode"]
 from sklearn.model_selection import train_test_split
 X_train,X_test,y_train,y_test = train_test_split(X,y,test_size=0.25,random_state=15)
 
-from sklearn.preprocessing import MinMaxScaler
-minmax = MinMaxScaler()
-X_trainscale = minmax.fit_transform(X_train)
-X_testscale = minmax.transform(X_test)
+#Veri sayısındaki denkesizlik problemini çözdüm(smote yöntemi)
+from imblearn.over_sampling import SMOTE
+smote = SMOTE(random_state=42)
+X_train_smote, y_train_smote = smote.fit_resample(X_train, y_train)
+X_test_smote , y_test_smote = smote.fit_resample(X_test, y_test)
 
-from sklearn.svm import SVC
-svc = SVC(kernel="rbf", class_weight="balanced",probability=True)
-svc.fit(X_trainscale,y_train)
-y_pred_proba = svc.predict_proba(X_testscale)[:, 1]
-yeni_esik = 0.25
-y_pred_yeni = (y_pred_proba >= yeni_esik).astype(int)
-
+#model eğitimi 
+from xgboost import XGBClassifier
+xgb = XGBClassifier(n_estimators=100)
+xgb.fit(X_train_smote,y_train_smote)
+pred = xgb.predict(X_test_smote)
 
 from sklearn.metrics import classification_report,confusion_matrix,accuracy_score
-report = classification_report(y_test,y_pred_yeni)
-matrix = confusion_matrix(y_test,y_pred_yeni)
-accuracy = accuracy_score(y_test,y_pred_yeni)
+report = classification_report(y_test_smote,pred)
+matrix = confusion_matrix(y_test_smote,pred)
+accuracy = accuracy_score(y_test_smote,pred)
 
 print(matrix)
 print(report)
 print(accuracy)
+
+#hiperparametre optimizasyonu
+from sklearn.model_selection import GridSearchCV
+params = {
+    "n_estimators": [100, 200, 300, 500],
+    "learning_rate": [0.01, 0.05, 0.1, 0.2],
+    "max_depth": [3, 4, 5, 6, 8],
+    "class_weight" : ["balanced",None]
+}
+
+grid = GridSearchCV(estimator=xgb,param_grid=params,scoring='f1',cv=5,verbose=2,n_jobs=-1)
+grid.fit(X_train_smote,y_train_smote)
+print(grid.best_params_)
+predgrid = grid.predict(X_test_smote)
+
+accuracygrid = accuracy_score(y_test_smote,predgrid)
+matrixgrid = confusion_matrix(y_test_smote,predgrid)
+reportgrid = classification_report(y_test_smote,predgrid)
+
+print(matrixgrid)
+print(reportgrid)
+print(accuracygrid)
+
 
 # Model pkl dosyası olarak kaydedildi.
 
