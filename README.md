@@ -1,8 +1,10 @@
-<img width="1218" height="798" alt="image" src="https://github.com/user-attachments/assets/a08fe0d0-25b2-4451-9691-1d1caa8b8130" />
-<img width="1282" height="831" alt="image" src="https://github.com/user-attachments/assets/491d6b97-9c5c-409e-966c-2cc2e7279e16" />
+<img width="1272" height="759" alt="image" src="https://github.com/user-attachments/assets/8267207a-611c-4159-b51c-40ad749a6cd2" />
+<img width="1076" height="785" alt="image" src="https://github.com/user-attachments/assets/add972c2-e9e8-4c1e-ab7c-09c7465d9f96" />
+
+
 
 Not:Aşağıdaki linke tıklayarak canlı olarak demoyu deneyebilirsiniz.Link aynı zamanda about kısmında da bulunmaktadır.
-https://linetelekomchurnproject.streamlit.app/
+https://linetelekomchurnprojects.streamlit.app/
 
 **Telco Customer Churn Prediction System**
 Bu proje, bir telekomünikasyon şirketinin müşteri verilerini analiz ederek, hangi müşterilerin hizmeti bırakma (Churn) ihtimali olduğunu tahmin eden bir makine öğrenmesi uygulamasıdır.
