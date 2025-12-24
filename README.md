@@ -35,10 +35,8 @@ TotalCharges,Müşteriden o güne kadar tahsil edilen toplam tutar.
 Churn,HEDEF DEĞİŞKEN: Müşteri ayrıldı mı? (Yes/No).
 
 **Model Performansı**
-Bu projede Support Vector Classifier (SVC) algoritması kullanılmıştır. 
-Dengesiz veri setini yönetmek için class_weight="balanced" parametresi ve Probability Threshold = 0.25 (Hassas Tahmin) ayarı tercih edilmiştir.
-
-- Algoritma: SVC (Kernel: RBF)
+Bu projede xgboost XGBClassifier algoritması kullanılmıştır. 
+- Algoritma: XGBClassifier
 Confusion Matrix:
 [[923 352]
  [103 383]]
@@ -54,21 +52,15 @@ Classification Report:
 weighted avg       0.80      0.74      0.75      1761
 
 Accuracy Score: 0.7416
-- Özellik: Model, müşteri kaybını (Churn) kaçırmamak için hassas ayarlanmıştır.
 
 **Kurulum ve Çalıştırma**
 
 1.Gerekli Kütüphaneleri Yükleyin
 **pip install -r requirements.txt**
 
-2.Uygulamayı Başlatın
-- Proje klasörüne gidin.
-- Klasör içindeki boş bir alana Sağ Tık yapın.
-- "Open in Terminal" (veya Git Bash Here) seçeneğine tıklayın.
-- Açılan siyah ekrana şu komutu yazıp Enter'a basın:
-**streamlit run app.py**
+2.baslat.py dosyasındaki main'i run ederek uygulamayı başlatın
 
-**(Not: Eğer dosya adınız farklıysa app.py yerine kendi dosya adınızı yazınız.)**
+**(Not:Klasör ve dosya yapısı repodaki gibi olmalıdır.)**
 
 Geliştirici: Mustafa Emre Geçim
 
