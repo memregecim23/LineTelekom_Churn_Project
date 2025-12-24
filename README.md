@@ -39,21 +39,25 @@ Churn,HEDEF DEĞİŞKEN: Müşteri ayrıldı mı? (Yes/No).
 **Model Performansı**
 Bu projede xgboost XGBClassifier algoritması kullanılmıştır. 
 - Algoritma: XGBClassifier
-Confusion Matrix:
-[[923 352]
- [103 383]]
 
-Classification Report:
-              precision    recall  f1-score   support
+### Model Performans Sonuçları
 
-           0       0.90      0.72      0.80      1275
-           1       0.52      0.79      0.63       486
+#### 1. Confusion Matrix (Karmaşıklık Matrisi)
+| Gerçek \ Tahmin | 0 (Negatif) | 1 (Pozitif) |
+| :--- | :---: | :---: |
+| **0** | 1089 | 186 |
+| **1** | 260 | 1015 |
 
-    accuracy                           0.74      1761
-   macro avg       0.71      0.76      0.71      1761
-weighted avg       0.80      0.74      0.75      1761
+#### 2. Sınıflandırma Raporu (Classification Report)
+| Class | Precision | Recall | F1-Score | Support |
+| :--- | :---: | :---: | :---: | :---: |
+| **0** | 0.81 | 0.85 | 0.83 | 1275 |
+| **1** | 0.85 | 0.80 | 0.82 | 1275 |
+| **Accuracy** | | | **0.83** | **2550** |
+| **Macro Avg** | 0.83 | 0.83 | 0.82 | 2550 |
+| **Weighted Avg**| 0.83 | 0.83 | 0.82 | 2550 |
 
-Accuracy Score: 0.7416
+**Genel Doğruluk (Exact Accuracy):** `%82.51` (0.825098)
 
 **Kurulum ve Çalıştırma**
 
